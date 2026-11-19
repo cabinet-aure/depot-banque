@@ -4,145 +4,265 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
+<meta name="format-detection" content="telephone=no">
 <title>Dépôt des documents bancaires – Cabinet AURE</title>
 <style>
-  :root{--vert:#2e6b3a;--vert2:#66bb6a;--vert3:#e8f5e9;--txt:#222;--gris:#6b6b6b;--filet:#e3e3e3}
+  :root{--vert:#2e6b3a;--vert2:#66bb6a;--vert3:#e8f5e9;--txt:#222;--gris:#6b6b6b;--bord:#e0e0e0;--dore:#a8892b;--rouge:#c00000}
   *{box-sizing:border-box}
-  body{margin:0;background:#f4f6f4;font-family:Arial,Helvetica,sans-serif;color:var(--txt);font-size:15px;line-height:1.45}
-  .maquette{color:#9a7b20;text-align:center;font-size:12px;padding:12px 10px 0}
-  .wrap{max-width:820px;margin:0 auto;padding:12px 16px 40px}
-  .carte{background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden}
-  header{padding:22px 26px 18px;text-align:center;border-bottom:1px solid #e8e4d8}
-  header .trait{width:120px;height:2px;background:#b8961e;margin:14px auto 0}
+  body{margin:0;background:#f4f5f3;font-family:Arial,Helvetica,sans-serif;color:var(--txt);font-size:15px;line-height:1.45}
+  .page{max-width:760px;margin:24px auto 40px;background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(30,58,95,.12);overflow:hidden}
+  .bande{height:8px;background:var(--vert2)}
+  header{background:#fff;padding:26px 24px 20px;text-align:center;border-bottom:1px solid #e6e1d3}
   header img{max-width:420px;width:85%;height:auto}
-  .carte{border-top:6px solid var(--vert2)}
-  .bande{padding:20px 32px 0;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-  .bande .lib{font-size:13px;color:var(--gris);text-transform:uppercase;letter-spacing:.5px}
-  .bande h1{margin:2px 0;font-size:25px;color:#222}
-  .bande .per{font-size:14px}
-  .limite{border:1px solid #b9dcb9;background:var(--vert3);border-radius:6px;padding:8px 18px;text-align:center}
-  .limite .t{font-size:12px;font-weight:bold;color:var(--vert);letter-spacing:.5px}
-  .limite .d{font-size:16px;font-weight:bold;color:var(--vert);white-space:nowrap}
-  .corps{padding:18px 32px 8px}
-  .intro{margin:0 0 6px}
-  .progres{display:flex;align-items:center;gap:12px;margin:16px 0 6px;font-size:14px;color:var(--gris)}
-  .barre{flex:1;height:8px;background:#e6ece6;border-radius:4px;overflow:hidden}
-  .barre span{display:block;height:100%;width:0;background:var(--vert2);transition:width .3s}
-  h2{font-size:14px;text-transform:uppercase;letter-spacing:.6px;color:var(--vert);margin:26px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--vert2)}
-  .doc{border:1px solid var(--filet);border-radius:8px;margin:0 0 12px;padding:14px 16px;transition:border-color .2s,background .2s}
-  .doc.ok{border-color:var(--vert2);background:#f6fbf6}
-  .doc-tete{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-  .doc-titre{font-weight:bold}
-  .doc-compte{color:var(--gris);font-size:14px;margin-top:2px}
-  [data-doc] .doc-compte{color:#222;font-size:15px;margin-top:4px}
-  .etat{flex:none;font-size:12px;font-weight:bold;padding:3px 9px;border-radius:12px;background:#fdecea;color:#b3261e;white-space:nowrap}
-  .doc.ok .etat{background:var(--vert3);color:var(--vert)}
+  .filet{width:120px;height:2px;background:var(--dore);margin:12px auto 0}
+  h1{font-size:22px;margin:20px 0 4px;color:var(--vert)}
+  .societe{font-size:17px;font-weight:bold}
+  .limite{display:inline-block;margin-top:10px;background:#fff;border:1px solid var(--bord);border-left:6px solid var(--vert2);padding:8px 12px;font-size:14px}
+  .limite b{color:var(--vert);white-space:nowrap}
+  .corps{background:#f7f8f6;padding:6px 24px 28px}
+  .msg{padding:30px 24px;text-align:center;color:var(--gris)}
+  .consigne{background:#fff;border:1px solid var(--bord);border-radius:8px;padding:14px 16px;margin:18px 0;font-size:14px}
+  .consigne ol{margin:6px 0 0 18px;padding:0}
+  .recu-global{background:var(--vert3);border:1px solid #c5e1c7;border-radius:8px;padding:10px 16px;color:var(--vert);font-size:14px;margin:0 0 6px}
+  section{margin-top:26px}
+  h2{font-size:16px;text-transform:uppercase;letter-spacing:.05em;color:var(--vert);border-bottom:2px solid var(--vert2);padding-bottom:6px;margin:0 0 12px}
+  .intro{font-size:13px;color:var(--gris);margin:-4px 0 12px}
+  .banque{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--bord);border-left:6px solid #8a8a8a;border-radius:8px;padding:12px 16px;margin:0 0 10px}
+  .pastille{flex:none;width:44px;height:44px;border-radius:50%;background:#8a8a8a;color:#fff;font-weight:bold;font-size:15px;display:flex;align-items:center;justify-content:center;letter-spacing:0}
+  .banque .nb{font-size:20px;font-weight:bold;line-height:1.2}
+  .banque .cpt{font-size:14px;margin-top:2px}
+  .groupe{border-left:3px solid #ddd;margin-left:20px;padding-left:12px;margin-bottom:18px}
+  .doc{background:#fff;border:1px solid var(--bord);border-radius:8px;padding:12px 16px;margin-bottom:12px}
+  .doc-titre{font-weight:bold;font-size:15px}
+  .doc-compte{font-size:13px;color:var(--gris);margin-top:2px}
+  .tag{display:inline-block;color:#fff;font-size:13px;font-weight:bold;border-radius:4px;padding:3px 8px;margin-bottom:6px;background:#8a8a8a}
+  .tag span{font-weight:normal;opacity:.9}
+  .annot{font-size:11px;color:#fff;background:#d84315;border-radius:10px;padding:2px 9px;margin-left:6px;vertical-align:middle;font-weight:normal;white-space:nowrap}
+  .deja{color:var(--rouge);font-weight:bold;font-size:13px;white-space:nowrap}
+  .recu{background:#fff;border:1px solid #e6e6e6;border-radius:8px;padding:9px 16px;margin-bottom:8px;color:#8a8a8a;font-size:14px}
+  .recu i{font-style:normal;color:var(--vert2)}
+  .recu span{font-size:13px}
   table.mt{border-collapse:collapse;margin:10px 0 2px;font-size:14px}
-  table.mt th{background:var(--vert3);color:var(--vert);font-size:13px;text-align:left;padding:4px 12px;border-bottom:2px solid var(--vert2)}
-  table.mt td{padding:3px 12px;border-bottom:1px solid #eee}
-  table.mt td.m{text-align:right;white-space:nowrap}
-  .zone{display:block;margin-top:10px;border:2px dashed #b9cfb9;border-radius:8px;padding:12px;text-align:center;color:var(--gris);font-size:14px;cursor:pointer;background:#fbfdfb;transition:background .2s,border-color .2s}
-  .zone:hover,.zone.survol{background:var(--vert3);border-color:var(--vert2);color:var(--vert)}
-  .zone b{color:var(--vert)}
+  table.mt th{background:var(--vert3);color:var(--vert);font-size:12px;text-align:left;padding:4px 12px;border-bottom:2px solid var(--vert2)}
+  table.mt th.m,table.mt td.m{text-align:right}
+  table.mt td{padding:4px 12px;border-bottom:1px solid #eee;white-space:nowrap}
+  .zone{display:block;margin-top:8px;border:2px dashed #b9c9bb;border-radius:8px;background:#fbfdfb;padding:9px 12px;text-align:center;color:var(--gris);font-size:14px;cursor:pointer;transition:background .15s,border-color .15s}
+  .zone .ico{color:var(--vert2);font-size:16px;margin-right:4px}
+  .zone u{color:var(--vert)}
+  .zone:hover,.zone.survol{background:var(--vert3);border-color:var(--vert)}
   .zone input{display:none}
   .fichiers{list-style:none;margin:8px 0 0;padding:0;font-size:13px}
-  .fichiers li{display:flex;justify-content:space-between;align-items:center;padding:4px 8px;background:#fff;border:1px solid #e3eee3;border-radius:6px;margin-top:4px}
-  .fichiers li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .fichiers button{border:0;background:none;color:#b3261e;cursor:pointer;font-size:13px}
-  textarea{width:100%;margin-top:10px;border:1px solid #d6d6d6;border-radius:6px;padding:8px;font:inherit;font-size:14px;min-height:60px}
-  .actions{text-align:center;padding:12px 26px 26px}
-  .btn{background:var(--vert);color:#fff;border:0;border-radius:8px;padding:14px 26px;font-size:16px;font-weight:bold;cursor:pointer}
+  .fichiers li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 10px;background:var(--vert3);border-radius:6px;margin-top:4px;color:var(--vert);font-weight:bold}
+  .fichiers li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:normal;color:var(--txt)}
+  .fichiers button{border:0;background:none;color:var(--gris);cursor:pointer;font-size:12px;text-decoration:underline;flex:none}
+  .rappel{background:#fff;border:1px dashed var(--dore);border-radius:8px;padding:12px 16px;font-size:14px;margin:6px 0 12px}
+  textarea{width:100%;margin-top:10px;border:1px solid var(--bord);border-radius:6px;padding:8px;font:inherit;font-size:14px;min-height:60px}
+  .envoyer{margin-top:28px;text-align:center}
+  .btn{background:var(--vert);color:#fff;border:0;border-radius:6px;padding:14px 26px;font-size:17px;font-weight:bold;cursor:pointer}
   .btn:disabled{background:#a9bfa9;cursor:not-allowed}
-  .note{font-size:13px;color:var(--gris);margin-top:10px}
-  footer{text-align:center;font-size:13px;color:var(--gris);padding:18px 10px 0}
-  .depose{color:var(--vert);font-size:14px;margin-top:8px}
-  .msg{padding:30px 26px;text-align:center;color:var(--gris)}
-  .err{color:#b3261e;font-size:13px;margin-top:6px}
-  .merci{display:none;padding:34px 26px;text-align:center}
+  .note{font-size:12px;color:var(--gris);margin-top:8px}
+  .err{color:#b3261e;font-size:13px;margin-top:8px}
+  .merci{display:none;padding:34px 24px;text-align:center;background:#fff}
   .merci .rond{width:64px;height:64px;border-radius:50%;background:var(--vert3);color:var(--vert);font-size:34px;line-height:64px;margin:0 auto 14px}
-  .merci h2{border:0;text-transform:none;letter-spacing:0;font-size:20px;margin:0 0 8px}
+  .merci h2{border:0;text-transform:none;letter-spacing:0;font-size:20px;margin:0 0 8px;color:var(--txt)}
   .merci ul{text-align:left;display:inline-block;font-size:14px;margin:12px 0 0}
-  @media(max-width:520px){.corps,.actions{padding-left:16px;padding-right:16px}.bande{padding:16px 16px 0}.doc-tete{flex-direction:column}.etat{align-self:flex-start}}
+  footer{text-align:center;font-size:12px;color:var(--gris);border-top:1px solid #bdbdbd;padding:14px 16px;background:#fff}
+  @media(max-width:640px){.page{margin:12px 8px 24px}.corps{padding:6px 12px 24px}.groupe{margin-left:10px;padding-left:8px}}
 </style>
 </head>
 <body>
-<div class="wrap">
- <div class="carte">
-  <header><img alt="Cabinet AURE" src="logo.png"><div class="trait"></div></header>
-  <div id="chargement" class="msg">Chargement de vos documents…</div>
-  <div id="contenu" style="display:none">
-   <div class="bande">
-     <div><div class="lib">Documents bancaires</div><h1 id="societe"></h1><div class="per" id="periode"></div></div>
-     <div class="limite" id="limite" style="display:none"><div class="t">DATE LIMITE</div><div class="d" id="dateLimite"></div></div>
+<div class="page">
+ <div class="bande"></div>
+ <header>
+  <img alt="Cabinet AURE – Expertise comptable et commissariat aux comptes" src="logo.png">
+  <div class="filet"></div>
+  <div id="entete" style="display:none">
+   <h1>Vos documents bancaires</h1>
+   <div class="societe" id="societe"></div>
+   <div class="limite" id="limite" style="display:none">Date limite de dépôt : <b id="dateLimite"></b></div>
+  </div>
+ </header>
+ <div id="chargement" class="msg">Chargement de vos documents…</div>
+ <div id="formulaire" class="corps" style="display:none">
+  <div class="consigne" id="consigne"></div>
+  <div class="recu-global" id="recuGlobal" style="display:none"></div>
+  <div id="liste"></div>
+  <section>
+   <h2>Autre document</h2>
+   <p class="intro">Un autre document bancaire à nous transmettre ? Relevé d’un autre compte, relevé de carte, LCR, contrat de prêt, crédit-bail…</p>
+   <div class="doc" id="autre" data-ref="AUTRE">
+    <div class="doc-titre" style="display:none">Autre document</div>
+    <label class="zone" style="margin-top:0"><input type="file" multiple><span class="ico">⇩</span> Glissez le ou les fichiers ici ou <u>cliquez pour les choisir</u></label>
+    <ul class="fichiers"></ul>
+    <textarea id="precision" placeholder="Précision facultative (ex. : contrat du nouveau véhicule)"></textarea>
    </div>
-   <div id="formulaire">
-    <div class="corps">
-     <p class="intro" id="intro">Pour chaque document ci-dessous, cliquez sur «&nbsp;<b>Déposer le fichier</b>&nbsp;», puis sur «&nbsp;<b>Envoyer mes documents</b>&nbsp;».</p>
-     <div class="progres" id="progres"><div class="barre"><span id="barre"></span></div><div id="compteur"></div></div>
-     <div id="liste"></div>
-     <h2>Autre document</h2>
-     <div class="doc" id="autre" data-ref="AUTRE">
-       <div class="doc-tete"><div><div class="doc-titre">Un autre document bancaire à nous transmettre ?</div><div class="doc-compte">Relevé d’un autre compte, relevé de carte, LCR, tableau d’amortissement…</div></div></div>
-       <label class="zone"><input type="file" multiple><b>Déposer le ou les fichiers</b> ou cliquer pour les choisir</label>
-       <ul class="fichiers"></ul>
-       <textarea id="precision" placeholder="Précision éventuelle (facultatif)"></textarea>
-     </div>
-    </div>
-    <div class="actions">
-     <button class="btn" id="envoyer" disabled>✔ Envoyer mes documents</button>
-     <div class="err" id="erreurEnvoi"></div>
-     <div class="note">Vous pouvez revenir sur cette page plus tard pour compléter : les documents déjà reçus n’y figureront plus.</div>
-    </div>
-   </div>
-   <div class="merci" id="merci">
-    <div class="rond">✔</div>
-    <h2>Merci, vos documents ont bien été transmis.</h2>
-    <ul id="recap"></ul>
-   </div>
+  </section>
+  <div class="envoyer">
+   <button class="btn" id="envoyer" disabled>✔ Envoyer mes documents</button>
+   <div class="err" id="erreurEnvoi"></div>
+   <div class="note" id="noteBas"></div>
   </div>
  </div>
- <footer>Pour toute information, veuillez nous contacter au 01&nbsp;30&nbsp;49&nbsp;50&nbsp;05.<br>CABINET AURE – 6 rue des Marais – 78310 Coignières</footer>
+ <div class="merci" id="merci">
+  <div class="rond">✔</div>
+  <h2>Merci, vos documents ont bien été transmis.</h2>
+  <ul id="recap"></ul>
+ </div>
+ <footer>CABINET AURE · 6 rue des Marais, 78310 Coignières · Tél. : 01&nbsp;30&nbsp;49&nbsp;50&nbsp;05</footer>
 </div>
 <script>
 (function(){
   var P=new URLSearchParams(location.search), S=P.get('s'), K=P.get('k'), X=P.get('x');
   var MAX=20*1024*1024, docs=[];
+  var ACCEPT='.pdf,.ofx,.jpg,.jpeg,.png,.heic,.xls,.xlsx,.csv,.qif,.txt';
   function $(i){return document.getElementById(i);}
-  function esc(t){var d=document.createElement('div');d.textContent=t==null?'':t;return d.innerHTML;}
-  var BANQUES=['Caisse d’Épargne','Banque Populaire','Crédit Agricole','Crédit Mutuel','CIC','Société Générale','BNP Paribas','LCL','La Banque Postale','Qonto','Caixa','Shine','CA Auto Bank'];
-  function banque(t){t=t.replace(/Caisse d&#39;Épargne|Caisse d'Épargne/g,'Caisse d’Épargne');BANQUES.forEach(function(b){t=t.split(b).join('<b>'+b+'</b>');});return t;}
+  function esc(t){var d=document.createElement('div');d.textContent=t==null?'':String(t);return d.innerHTML;}
+  function nbsp(t){return esc(t).replace(/ /g,'&nbsp;');}
+
+  /* Banques : nom recherché dans la colonne « Compte », sigle, couleur de fond, couleur du texte, bordure de la pastille */
+  var BANQUES=[
+    ['Caisse d’Épargne','CAISSE D’ÉPARGNE','CE','#d6001c','#fff',''],
+    ['Banque Populaire','BANQUE POPULAIRE','BP','#2b4b9b','#fff',''],
+    ['Crédit Agricole','CRÉDIT AGRICOLE','CA','#00775a','#fff',''],
+    ['Crédit Mutuel','CRÉDIT MUTUEL','CM','#0067b1','#fff','3px solid #e2001a'],
+    ['Société Générale','SOCIÉTÉ GÉNÉRALE','SG','#c8102e','#fff','3px solid #222'],
+    ['BNP Paribas','BNP PARIBAS','BNP','#00965e','#fff',''],
+    ['La Banque Postale','LA BANQUE POSTALE','LBP','#ffcc00','#003b80',''],
+    ['LCL','LCL','LCL','#0a2240','#fff',''],
+    ['CIC','CIC','CIC','#0072bc','#fff',''],
+    ['Qonto','QONTO','QONTO','#111111','#fff',''],
+    ['Caixa','CAIXA','CGD','#004a8f','#fff',''],
+    ['Shine','SHINE','SHINE','#5a4fcf','#fff',''],
+    ['CA Auto Bank','CA AUTO BANK','CAAB','#00775a','#fff','']
+  ];
+  function normal(t){return String(t||'').replace(/'/g,'’').replace(/Caisse d’Epargne/gi,'Caisse d’Épargne');}
+  /* Lit « Compte courant Banque Populaire (se terminant par 3542) – précision » */
+  function lireCompte(c){
+    c=normal(c);
+    var r={type:'',fin:'',suite:'',b:null};
+    var m=c.match(/se terminant par\s*(\d+)/i); if(m)r.fin=m[1];
+    var tiret=c.split(/\)\s*[–-]\s*/); if(tiret.length>1)r.suite=tiret.slice(1).join(' – ');
+    BANQUES.slice().sort(function(a,b){return b[0].length-a[0].length;}).some(function(b){
+      var i=c.toLowerCase().indexOf(b[0].toLowerCase()); if(i<0)return false;
+      r.b=b; r.type=c.slice(0,i).trim(); return true;
+    });
+    if(!r.b){
+      var nom=c.replace(/\(.*$/,'').replace(/^(prélevé sur le |compte courant |compte )/i,'').trim()||'Banque';
+      var ini=nom.split(/\s+/).map(function(w){return w.charAt(0);}).join('').slice(0,3).toUpperCase();
+      r.b=[nom,nom.toUpperCase(),ini,'#8a8a8a','#fff',''];
+      r.type=(c.match(/^(.*?compte [^()]*?)\s/i)||['',''])[1];
+    }
+    r.type=r.type.replace(/^prélevé sur (le |la )?/i,'').replace(/\s+$/,'')||'Compte';
+    r.type=r.type.charAt(0).toUpperCase()+r.type.slice(1);
+    r.cle=r.b[2]+'|'+r.fin;
+    return r;
+  }
+  function pastille(b){
+    var fs=b[2].length>=5?'9.5px':(b[2].length>=3?'13px':'15px');
+    return '<div class="pastille" style="background:'+b[3]+';color:'+b[4]+';'+(b[5]?'border:'+b[5]+';':'')+'font-size:'+fs+'">'+esc(b[2])+'</div>';
+  }
+  function couleur(b){return b[2]==='LBP'?'#003b80':b[3];}
+  function encadre(r){
+    return '<div class="banque" style="border-left-color:'+couleur(r.b)+'">'+pastille(r.b)+
+      '<div><div class="nb">'+esc(r.b[1])+'</div><div class="cpt">'+esc(r.type)+(r.fin?' se terminant par <b style="color:'+couleur(r.b)+'">'+esc(r.fin)+'</b>':'')+'</div></div></div>';
+  }
+  function etiquette(r,x){return '<div class="tag" style="background:'+couleur(r.b)+';color:'+(r.b[2]==='LBP'?'#fff':r.b[4])+'">'+esc(r.b[1])+(r.fin?' <span>· compte se terminant par '+esc(r.fin)+'</span>':'')+'</div>';}
+
   function erreur(t){$('chargement').innerHTML=esc(t)+'<br><br>Pour toute information : 01&nbsp;30&nbsp;49&nbsp;50&nbsp;05.';}
   if(!S||!K||!X){erreur('Ce lien n’est pas valide.');return;}
 
-  fetch(X+'?s='+encodeURIComponent(S)+'&k='+encodeURIComponent(K)).then(function(r){return r.json();}).then(function(d){
+  fetch(X+'?s='+encodeURIComponent(S)+'&k='+encodeURIComponent(K)+(P.get('r')?'&r='+encodeURIComponent(P.get('r')):'')).then(function(r){return r.json();}).then(function(d){
     if(!d.ok){erreur(d.erreur||'Ce lien n’est pas valide.');return;}
     $('societe').textContent=d.societe;
-    $('periode').textContent=d.periode||'';
-    if(d.dateLimite){$('dateLimite').textContent='► '+d.dateLimite+' ◄';$('limite').style.display='';}
-    afficher(d.documents||[]);
-    $('chargement').style.display='none';$('contenu').style.display='';
+    if(d.dateLimite){$('dateLimite').textContent=d.dateLimite;$('limite').style.display='';}
+    document.title='Documents bancaires – '+d.societe;
+    afficher(d);
+    $('entete').style.display='';$('chargement').style.display='none';$('formulaire').style.display='';
   }).catch(function(){erreur('La page n’a pas pu être chargée. Merci de réessayer dans quelques instants.');});
 
-  function afficher(liste){
-    var h='',rub='';
-    liste.forEach(function(x){
-      if(x.rubrique!==rub){rub=x.rubrique;h+='<h2>'+esc(rub)+'</h2>';}
-      var t='';
-      if(x.montants&&x.montants.length){
-        t='<table class="mt"><tr><th>Date du prélèvement</th><th>Montant en EUR</th></tr>'+
-          x.montants.map(function(m){return '<tr><td>'+esc(m.date)+'</td><td class="m">'+esc(m.montant).replace(/ /g,'&nbsp;')+'</td></tr>';}).join('')+'</table>';
+  function estRecu(x){return x.statut==='Déposé'||x.statut==='Reçu';}
+  function estComplement(x){return /compl[ée]ment/i.test(x.rubrique||'');}
+  function etiquetteAuto(x){
+    if(x.etiquette)return x.etiquette;
+    if(estComplement(x)||(x.montants&&x.montants.length))return '';
+    var t=x.document||'';
+    if(/carte/i.test(t))return 'si carte à débit différé';
+    if(/LCR|effets/i.test(t))return 'si LCR ce mois-ci';
+    if(/frais|agios/i.test(t))return 'si vous en avez';
+    if(/dernier relevé/i.test(t))return 'si la banque vous en a envoyé un';
+    return '';
+  }
+  function dejaDemande(x){
+    return x.dejaDemandeLe||'';
+  }
+  function carteDoc(x,r,avecTag){
+    if(estRecu(x)){
+      return '<div class="recu"><i>✔</i> '+esc(x.document)+' <span>– reçu'+(x.deposeLe?' le '+esc(String(x.deposeLe).split(' ')[0]):'')+'</span></div>';
+    }
+    var et=etiquetteAuto(x), dd=dejaDemande(x), t='';
+    if(x.montants&&x.montants.length){
+      t='<table class="mt"><tr><th>Date du prélèvement</th><th class="m">Montant en EUR</th></tr>'+
+        x.montants.map(function(m){return '<tr><td>'+esc(m.date)+'</td><td class="m">'+nbsp(m.montant)+'</td></tr>';}).join('')+'</table>';
+    }
+    return '<div class="doc" data-ref="'+esc(x.ref)+'" data-doc="1">'+
+      (avecTag?etiquette(r,x):'')+
+      '<div class="doc-titre">'+esc(x.document)+(et?' <span class="annot">'+esc(et)+'</span>':'')+(dd?' <span class="deja">– déjà demandé le '+esc(dd)+'</span>':'')+'</div>'+
+      (r.suite?'<div class="doc-compte">'+esc(r.suite.charAt(0).toUpperCase()+r.suite.slice(1))+'</div>':'')+
+      (t?'<div class="doc-compte">Pour les prélèvements suivants :</div>'+t:'')+
+      '<label class="zone"><input type="file" multiple accept="'+ACCEPT+'"><span class="ico">⇩</span> Glissez le fichier ici ou <u>cliquez pour le choisir</u></label><ul class="fichiers"></ul>'+
+      '</div>';
+  }
+  /* Regroupe les documents par compte, dans l'ordre d'arrivée */
+  function parCompte(liste){
+    var ordre=[],g={};
+    liste.forEach(function(x){var r=lireCompte(x.compte);if(!g[r.cle]){g[r.cle]={r:r,l:[]};ordre.push(r.cle);}g[r.cle].l.push({x:x,r:lireCompte(x.compte)});});
+    return ordre.map(function(k){return g[k];});
+  }
+  function blocBanques(liste){
+    return parCompte(liste).map(function(gr){
+      return encadre(gr.r)+'<div class="groupe" style="border-left-color:'+couleur(gr.r.b)+'33">'+gr.l.map(function(o){return carteDoc(o.x,o.r,false);}).join('')+'</div>';
+    }).join('');
+  }
+
+  function afficher(d){
+    var liste=d.documents||[], relance=!!d.relance;
+    var mois=liste.filter(function(x){return !estComplement(x);});
+    var compl=liste.filter(estComplement);
+    var recus=liste.filter(estRecu);
+    var h='';
+    if(relance){
+      var reste=liste.filter(function(x){return !estRecu(x);});
+      if(recus.length||d.recusNb){
+        var n=d.recusNb||recus.length, le=d.recusLe||(recus[0]&&recus[0].deposeLe?String(recus[0].deposeLe).split(' ')[0]:'');
+        $('recuGlobal').innerHTML='✔ Nous avons bien reçu vos autres documents ('+n+' fichier'+(n>1?'s':'')+(le?', le '+esc(le):'')+'). Il ne reste que les documents ci-dessous.';
+        $('recuGlobal').style.display='';
       }
-      var ok=x.statut==='Déposé';
-      h+='<div class="doc'+(ok?' ok':'')+'" data-ref="'+esc(x.ref)+'" data-doc="'+(ok?'':'1')+'">'+
-         '<div class="doc-tete"><div><div class="doc-titre">'+esc(x.document)+'</div><div class="doc-compte">'+banque(esc(x.compte))+'</div></div>'+
-         '<div class="etat">'+(ok?'Reçu ✓':'À déposer')+'</div></div>'+t+
-         (ok?'<div class="depose">Reçu le '+esc(x.deposeLe)+', en cours de vérification par le cabinet.</div>':
-         '<label class="zone"><input type="file" multiple accept=".pdf,.ofx,.jpg,.jpeg,.png,.heic,.xls,.xlsx,.csv,.qif,.txt"><b>Déposer le fichier</b> ou cliquer pour le choisir</label><ul class="fichiers"></ul>')+
-         '</div>';
-    });
+      $('consigne').innerHTML='Pour compléter votre dossier, merci de nous transmettre les documents ci-dessous : glissez chaque fichier dans sa case, puis cliquez sur le bouton vert «&nbsp;Envoyer mes documents&nbsp;».';
+      h+='<section><h2>Documents encore attendus</h2>'+blocBanques(reste)+'</section>';
+      $('noteBas').textContent='Vous pouvez revenir plus tard si vous n’avez pas encore tous les documents.';
+    } else {
+      var opt=mois.some(function(x){return !estRecu(x)&&etiquetteAuto(x);});
+      $('consigne').innerHTML='Pour compléter votre dossier, merci de nous transmettre les documents ci-dessous.<ol>'+
+        '<li>Glissez chaque fichier dans la case du document correspondant (ou cliquez dans la case pour le choisir).</li>'+
+        (recus.length?'<li>Les documents marqués ✔ sont bien arrivés : il n’y a rien à refaire.</li>':'')+
+        (opt?'<li>Les documents avec une étiquette orange ne sont à déposer que s’ils existent ce mois-ci.</li>':'')+
+        '<li>Terminez par le bouton vert «&nbsp;Envoyer mes documents&nbsp;» en bas de page.</li></ol>';
+      if(mois.length){
+        var rub=mois[0].rubrique||'Documents du mois';
+        h+='<section><h2>'+esc(rub)+'</h2>'+blocBanques(mois)+
+           '<div class="rappel"><b>Ce mois-ci, avez-vous signé un nouveau prêt, un crédit-bail, une location longue durée, ou ouvert un nouveau compte ?</b><br>Si oui, merci de joindre le contrat ou le tableau d’amortissement dans «&nbsp;Autre document&nbsp;» ci-dessous.</div></section>';
+      }
+      var complRestants=compl.filter(function(x){return !estRecu(x);});
+      if(compl.length){
+        h+='<section><h2>Documents encore attendus</h2><p class="intro">Documents demandés après lecture de vos relevés.</p>'+
+           compl.map(function(x){return carteDoc(x,lireCompte(x.compte),true);}).join('')+'</section>';
+      }
+      if(!liste.some(function(x){return !estRecu(x);})){
+        $('consigne').innerHTML='Tous les documents demandés ont bien été reçus. Merci. Vous pouvez encore nous transmettre un autre document ci-dessous.';
+      }
+      $('noteBas').textContent='Vous pouvez revenir plus tard : les documents déjà reçus restent indiqués avec ✔.';
+    }
     $('liste').innerHTML=h;
-    var aDeposer=liste.filter(function(x){return x.statut!=='Déposé';}).length;
-    if(!aDeposer){$('intro').textContent='Tous les documents demandés ont été reçus. Merci. Vous pouvez encore nous transmettre un autre document ci-dessous.';$('progres').style.display='none';}
     docs=[].slice.call(document.querySelectorAll('[data-doc="1"]'));
     docs.concat([$('autre')]).forEach(brancher);
     maj();
@@ -150,17 +270,16 @@
 
   function brancher(d){
     d.files=[];
-    var zone=d.querySelector('.zone'),input=zone.querySelector('input'),ul=d.querySelector('.fichiers'),etat=d.querySelector('.etat');
+    var zone=d.querySelector('.zone'),input=zone.querySelector('input'),ul=d.querySelector('.fichiers');
     function rendre(){
       ul.innerHTML='';
       d.files.forEach(function(f,i){
         var li=document.createElement('li'),s=document.createElement('span'),b=document.createElement('button');
-        s.textContent='📄 '+f.name;b.textContent='Retirer';b.type='button';
+        li.appendChild(document.createTextNode('✔ Fichier prêt :'));
+        s.textContent=f.name;b.textContent='retirer';b.type='button';
         b.onclick=function(){d.files.splice(i,1);rendre();};
         li.appendChild(s);li.appendChild(b);ul.appendChild(li);
       });
-      d.classList.toggle('ok',d.files.length>0);
-      if(etat)etat.textContent=d.files.length?'Prêt à envoyer':'À déposer';
       maj();
     }
     function ajouter(l){for(var i=0;i<l.length;i++){if(l[i].size>MAX){alerte(l[i].name+' : fichier trop volumineux (20 Mo au maximum).');continue;}d.files.push(l[i]);}rendre();}
@@ -172,8 +291,6 @@
   function alerte(t){$('erreurEnvoi').textContent=t;}
   function maj(){
     var n=docs.filter(function(d){return d.files.length;}).length;
-    $('barre').style.width=(docs.length?n/docs.length*100:0)+'%';
-    $('compteur').textContent=n+' document'+(n>1?'s':'')+' sur '+docs.length+' prêt'+(n>1?'s':'')+' à envoyer';
     $('envoyer').disabled=!(n||$('autre').files.length||$('precision').value.trim());
   }
   $('precision').addEventListener('input',maj);
