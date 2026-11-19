@@ -229,6 +229,8 @@
     }).join('');
   }
 
+  var TOUT_RECU='<div style="color:var(--vert);font-weight:bold;font-size:15px">✔ Nous avons bien reçu l’ensemble des documents demandés et vous en remercions.</div>'+
+    '<div style="margin-top:4px">Si besoin, vous pouvez encore nous transmettre un autre document dans la rubrique «&nbsp;Autre document&nbsp;».</div>';
   function afficher(d){
     var liste=d.documents||[], relance=!!d.relance;
     var mois=liste.filter(function(x){return !estComplement(x);});
@@ -242,8 +244,15 @@
         $('recuGlobal').innerHTML='✔ Nous avons bien reçu vos documents'+(le?' du '+esc(le):'')+'. Seuls les documents ci-dessous restent à nous transmettre.';
         $('recuGlobal').style.display='';
       }
-      $('consigne').innerHTML='Pour compléter votre dossier, merci de nous transmettre les documents ci-dessous : glissez chaque fichier dans sa case, puis cliquez sur le bouton vert «&nbsp;Envoyer mes documents&nbsp;».';
-      h+='<section><h2>Documents encore attendus</h2>'+blocBanques(reste)+'</section>';
+      $('consigne').innerHTML='Pour compléter votre dossier, merci de nous transmettre les documents ci-dessous.<ol>'+
+        '<li>Déposez chaque fichier dans l’emplacement prévu pour le document correspondant.</li>'+
+        '<li>Validez ensuite votre envoi à l’aide du bouton «&nbsp;Envoyer mes documents&nbsp;».</li></ol>';
+      if(reste.length){
+        h+='<section><h2>Documents encore attendus</h2>'+blocBanques(reste)+'</section>';
+      } else {
+        $('recuGlobal').style.display='none';
+        $('consigne').innerHTML=TOUT_RECU;
+      }
       $('noteBas').textContent='Vous pouvez revenir sur cette page à tout moment pour compléter votre envoi.';
     } else {
       var opt=mois.some(function(x){return !estRecu(x)&&etiquetteAuto(x);});
@@ -262,7 +271,7 @@
            compl.map(function(x){return carteDoc(x,lireCompte(x.compte),true);}).join('')+'</section>';
       }
       if(!liste.some(function(x){return !estRecu(x);})){
-        $('consigne').innerHTML='Tous les documents demandés ont bien été reçus. Merci. Vous pouvez encore nous transmettre un autre document ci-dessous.';
+        $('consigne').innerHTML=TOUT_RECU;
       }
       $('noteBas').textContent='Vous pouvez revenir sur cette page à tout moment pour compléter votre envoi.';
     }
