@@ -38,6 +38,7 @@
   .groupe{border-left:3px solid #ddd;margin-left:20px;padding-left:12px;margin-bottom:18px}
   .doc{background:#fff;border:1px solid var(--bord);border-radius:8px;padding:12px 16px;margin-bottom:12px}
   .doc-titre{font-weight:bold;font-size:15px}
+  .doc-titre .fin{font-weight:normal;color:var(--gris);font-size:14px;white-space:nowrap}
   .doc-compte{font-size:13px;color:var(--gris);margin-top:2px}
   .tag{display:inline-block;color:#fff;font-size:13px;font-weight:bold;border-radius:4px;padding:3px 8px;margin-bottom:6px;background:#8a8a8a}
   .tag span{font-weight:normal;opacity:.9}
@@ -57,8 +58,9 @@
   .zone input{display:none}
   .fichiers{list-style:none;margin:8px 0 0;padding:0;font-size:13px}
   .fichiers li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 10px;background:var(--vert3);border-radius:6px;margin-top:4px;color:var(--vert);font-weight:bold}
-  .fichiers li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:normal;color:var(--txt)}
+  .fichiers li span{flex:1;text-align:left;margin-left:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:normal;color:var(--txt)}
   .fichiers button{border:0;background:none;color:var(--gris);cursor:pointer;font-size:12px;text-decoration:underline;flex:none}
+  .avert{margin-top:8px;font-size:13px;color:#8a3a1c;background:#fff3ee;border:1px solid #ffcab5;border-radius:6px;padding:7px 10px}
   .rappel{background:#fff;border:1px dashed var(--dore);border-radius:8px;padding:12px 16px;font-size:14px;margin:6px 0 12px}
   textarea{width:100%;margin-top:10px;border:1px solid var(--bord);border-radius:6px;padding:8px;font:inherit;font-size:14px;min-height:60px}
   .envoyer{margin-top:28px;text-align:center}
@@ -169,10 +171,11 @@
     return '<div class="pastille" style="background:'+b[3]+';color:'+b[4]+';'+(b[5]?'border:'+b[5]+';':'')+'font-size:'+fs+'">'+esc(b[2])+'</div>';
   }
   function couleur(b){return b[2]==='LBP'?'#003b80':b[3];}
-  function encadre(r){
+  function encadre(r,n){
     return '<div class="banque" style="border-left-color:'+couleur(r.b)+'">'+pastille(r.b)+
-      '<div><div class="nb">'+esc(r.b[1])+'</div><div class="cpt">'+esc(r.type)+(r.fin?' se terminant par <b style="color:'+couleur(r.b)+'">'+esc(r.fin)+'</b>':'')+'</div></div></div>';
+      '<div><div class="nb">'+esc(r.b[1])+'</div><div class="cpt">'+(n>1?n+' comptes':esc(r.type)+(r.fin?' se terminant par <b style="color:'+couleur(r.b)+'">'+esc(r.fin)+'</b>':''))+'</div></div></div>';
   }
+
   function etiquette(r,x){return '<div class="tag" style="background:'+couleur(r.b)+';color:'+(r.b[2]==='LBP'?'#fff':r.b[4])+'">'+esc(r.b[1])+(r.fin?' <span>· compte se terminant par '+esc(r.fin)+'</span>':'')+'</div>';}
 
   function erreur(t){$('chargement').innerHTML=esc(t)+'<br><br>Pour toute information : 01&nbsp;30&nbsp;49&nbsp;50&nbsp;05.';}
@@ -193,18 +196,18 @@
     if(x.etiquette)return x.etiquette;
     if(estComplement(x)||(x.montants&&x.montants.length))return '';
     var t=x.document||'';
-    if(/carte/i.test(t))return 'si carte à débit différé';
-    if(/LCR|effets/i.test(t))return 'si LCR ce mois-ci';
-    if(/frais|agios/i.test(t))return 'si vous en avez';
-    if(/dernier relevé/i.test(t))return 'si la banque vous en a envoyé un';
+    if(/carte/i.test(t))return 'carte à débit différé uniquement';
+    if(/LCR|effets/i.test(t))return 'en cas de LCR sur la période';
+    if(/frais|agios/i.test(t))return 'le cas échéant';
+    if(/dernier relevé/i.test(t))return 'le cas échéant';
     return '';
   }
   function dejaDemande(x){
     return x.dejaDemandeLe||'';
   }
-  function carteDoc(x,r,avecTag){
+  function carteDoc(x,r,avecTag,plusieurs){
     if(estRecu(x)){
-      return '<div class="recu"><i>✔</i> '+esc(x.document)+' <span>– reçu'+(x.deposeLe?' le '+esc(String(x.deposeLe).split(' ')[0]):'')+'</span></div>';
+      return '<div class="recu"><i>✔</i> '+titreDoc(x,r,!!plusieurs)+' <span>– reçu'+(x.deposeLe?' le '+esc(String(x.deposeLe).split(' ')[0]):'')+'</span></div>';
     }
     var et=etiquetteAuto(x), dd=dejaDemande(x), t='';
     if(x.montants&&x.montants.length){
@@ -213,21 +216,29 @@
     }
     return '<div class="doc" data-ref="'+esc(x.ref)+'" data-doc="1">'+
       (avecTag?etiquette(r,x):'')+
-      '<div class="doc-titre">'+esc(x.document)+(et?' <span class="annot">'+esc(et)+'</span>':'')+(dd?' <span class="deja">– déjà demandé le '+esc(dd)+'</span>':'')+'</div>'+
+      '<div class="doc-titre">'+titreDoc(x,r,!avecTag&&!!plusieurs)+(et?' <span class="annot">'+esc(et)+'</span>':'')+(dd?' <span class="deja">– déjà demandé le '+esc(dd)+'</span>':'')+'</div>'+
       (r.suite?'<div class="doc-compte">'+esc(r.suite.charAt(0).toUpperCase()+r.suite.slice(1))+'</div>':'')+
       (t?'<div class="doc-compte">Pour les prélèvements suivants :</div>'+t:'')+
       '<label class="zone"><input type="file" multiple accept="'+ACCEPT+'"><span class="ico">⇩</span> Déposer le fichier ici ou <u>cliquer pour le sélectionner</u></label><ul class="fichiers"></ul>'+
       '</div>';
   }
-  /* Regroupe les documents par compte, dans l'ordre d'arrivée */
+  /* Titre de la case : « Relevé de novembre 2026 – Compte courant (se terminant par 5540) » */
+  function titreDoc(x,r,avecCompte){
+    var d=String(x.document||'').replace(/^Relevé de compte (de |d’|d')/i,function(m){return m.replace(/de compte /i,'');})
+      .replace(/^Dernier relevé de compte disponible/i,'Dernier relevé disponible');
+    var h=esc(d);
+    if(avecCompte&&r.type) h+=' – <span class="cpt-t">'+esc(r.type)+'</span>'+(r.fin?' <span class="fin">(se terminant par '+esc(r.fin)+')</span>':'');
+    return h;
+  }
+  /* Regroupe les documents par banque, dans l'ordre d'arrivée */
   function parCompte(liste){
     var ordre=[],g={};
-    liste.forEach(function(x){var r=lireCompte(x.compte);if(!g[r.cle]){g[r.cle]={r:r,l:[]};ordre.push(r.cle);}g[r.cle].l.push({x:x,r:lireCompte(x.compte)});});
-    return ordre.map(function(k){return g[k];});
+    liste.forEach(function(x){var r=lireCompte(x.compte),k=r.b[1];if(!g[k]){g[k]={r:r,l:[],fins:{}};ordre.push(k);}g[k].l.push({x:x,r:r});g[k].fins[r.cle]=1;});
+    return ordre.map(function(k){g[k].n=Object.keys(g[k].fins).length;return g[k];});
   }
   function blocBanques(liste){
     return parCompte(liste).map(function(gr){
-      return encadre(gr.r)+'<div class="groupe" style="border-left-color:'+couleur(gr.r.b)+'33">'+gr.l.map(function(o){return carteDoc(o.x,o.r,false);}).join('')+'</div>';
+      return encadre(gr.r,gr.n)+'<div class="groupe" style="border-left-color:'+couleur(gr.r.b)+'33">'+gr.l.map(function(o){return carteDoc(o.x,o.r,false,gr.n>1);}).join('')+'</div>';
     }).join('');
   }
 
@@ -295,6 +306,14 @@
         b.onclick=function(){d.files.splice(i,1);rendre();};
         li.appendChild(s);li.appendChild(b);ul.appendChild(li);
       });
+      /* Relevé demandé mais seulement un export (OFX, CSV, QIF, Excel) : prévenir le client */
+      var av=d.querySelector('.avert');
+      var releve=d.id!=='autre'&&/relevé/i.test(d.querySelector('.doc-titre').textContent);
+      var exportSeul=d.files.length&&d.files.every(function(f){return /\.(ofx|qif|csv|tsv|txt|xls|xlsx)$/i.test(f.name);});
+      if(releve&&exportSeul){
+        if(!av){av=document.createElement('div');av.className='avert';ul.parentNode.insertBefore(av,ul.nextSibling);}
+        av.textContent='Ce fichier est un export de vos opérations. Merci de déposer également le relevé de compte au format PDF.';
+      } else if(av){av.remove();}
       maj();
     }
     function ajouter(l){for(var i=0;i<l.length;i++){if(l[i].size>MAX){alerte(l[i].name+' : fichier trop volumineux (20 Mo au maximum).');continue;}d.files.push(l[i]);}rendre();}
