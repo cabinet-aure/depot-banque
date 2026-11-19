@@ -19,6 +19,10 @@
   .societe{font-size:17px;font-weight:bold}
   .limite{display:inline-block;margin-top:10px;background:#fff;border:1px solid var(--bord);border-left:6px solid var(--vert2);padding:8px 12px;font-size:14px}
   .limite b{color:var(--vert);white-space:nowrap}
+  .titre{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px;text-align:left;margin-top:20px}
+  .petit{font-size:12px;color:var(--gris);letter-spacing:1px}
+  .titre .societe{font-size:24px;font-weight:bold;margin-top:2px}
+  .titre .limite{margin:0;background:var(--vert3);border:1px solid #c5e1c7;border-left:6px solid var(--vert2)}
   .corps{background:#f7f8f6;padding:6px 24px 28px}
   .msg{padding:30px 24px;text-align:center;color:var(--gris)}
   .consigne{background:#fff;border:1px solid var(--bord);border-radius:8px;padding:14px 16px;margin:18px 0;font-size:14px}
@@ -77,9 +81,10 @@
   <img alt="Cabinet AURE – Expertise comptable et commissariat aux comptes" src="logo.png">
   <div class="filet"></div>
   <div id="entete" style="display:none">
-   <h1>Vos documents bancaires</h1>
-   <div class="societe" id="societe"></div>
-   <div class="limite" id="limite" style="display:none">Date limite de dépôt : <b id="dateLimite"></b></div>
+   <div class="titre">
+    <div><div class="petit">TRANSMISSION DE VOS DOCUMENTS BANCAIRES</div><div class="societe" id="societe"></div></div>
+    <div class="limite" id="limite" style="display:none">Date limite de dépôt : <b id="dateLimite"></b></div>
+   </div>
   </div>
  </header>
  <div id="chargement" class="msg">Chargement de vos documents…</div>
@@ -89,12 +94,12 @@
   <div id="liste"></div>
   <section>
    <h2>Autre document</h2>
-   <p class="intro">Un autre document bancaire à nous transmettre ? Relevé d’un autre compte, relevé de carte, LCR, contrat de prêt, crédit-bail…</p>
+   <p class="intro">Vous pouvez joindre ici tout autre document bancaire utile (relevé d’un autre compte, contrat de prêt, crédit-bail…).</p>
    <div class="doc" id="autre" data-ref="AUTRE">
     <div class="doc-titre" style="display:none">Autre document</div>
-    <label class="zone" style="margin-top:0"><input type="file" multiple><span class="ico">⇩</span> Glissez le ou les fichiers ici ou <u>cliquez pour les choisir</u></label>
+    <label class="zone" style="margin-top:0"><input type="file" multiple><span class="ico">⇩</span> Déposer le ou les fichiers ici ou <u>cliquer pour les sélectionner</u></label>
     <ul class="fichiers"></ul>
-    <textarea id="precision" placeholder="Précision facultative (ex. : contrat du nouveau véhicule)"></textarea>
+    <textarea id="precision" placeholder="Commentaire (facultatif)"></textarea>
    </div>
   </section>
   <div class="envoyer">
@@ -105,7 +110,7 @@
  </div>
  <div class="merci" id="merci">
   <div class="rond">✔</div>
-  <h2>Merci, vos documents ont bien été transmis.</h2>
+  <h2>Nous vous remercions : vos documents ont bien été transmis au cabinet.</h2>
   <ul id="recap"></ul>
  </div>
  <footer>CABINET AURE · 6 rue des Marais, 78310 Coignières · Tél. : 01&nbsp;30&nbsp;49&nbsp;50&nbsp;05</footer>
@@ -209,7 +214,7 @@
       '<div class="doc-titre">'+esc(x.document)+(et?' <span class="annot">'+esc(et)+'</span>':'')+(dd?' <span class="deja">– déjà demandé le '+esc(dd)+'</span>':'')+'</div>'+
       (r.suite?'<div class="doc-compte">'+esc(r.suite.charAt(0).toUpperCase()+r.suite.slice(1))+'</div>':'')+
       (t?'<div class="doc-compte">Pour les prélèvements suivants :</div>'+t:'')+
-      '<label class="zone"><input type="file" multiple accept="'+ACCEPT+'"><span class="ico">⇩</span> Glissez le fichier ici ou <u>cliquez pour le choisir</u></label><ul class="fichiers"></ul>'+
+      '<label class="zone"><input type="file" multiple accept="'+ACCEPT+'"><span class="ico">⇩</span> Déposer le fichier ici ou <u>cliquer pour le sélectionner</u></label><ul class="fichiers"></ul>'+
       '</div>';
   }
   /* Regroupe les documents par compte, dans l'ordre d'arrivée */
@@ -234,33 +239,32 @@
       var reste=liste.filter(function(x){return !estRecu(x);});
       if(recus.length||d.recusNb){
         var n=d.recusNb||recus.length, le=d.recusLe||(recus[0]&&recus[0].deposeLe?String(recus[0].deposeLe).split(' ')[0]:'');
-        $('recuGlobal').innerHTML='✔ Nous avons bien reçu vos autres documents ('+n+' fichier'+(n>1?'s':'')+(le?', le '+esc(le):'')+'). Il ne reste que les documents ci-dessous.';
+        $('recuGlobal').innerHTML='✔ Nous avons bien reçu vos documents'+(le?' du '+esc(le):'')+'. Seuls les documents ci-dessous restent à nous transmettre.';
         $('recuGlobal').style.display='';
       }
       $('consigne').innerHTML='Pour compléter votre dossier, merci de nous transmettre les documents ci-dessous : glissez chaque fichier dans sa case, puis cliquez sur le bouton vert «&nbsp;Envoyer mes documents&nbsp;».';
       h+='<section><h2>Documents encore attendus</h2>'+blocBanques(reste)+'</section>';
-      $('noteBas').textContent='Vous pouvez revenir plus tard si vous n’avez pas encore tous les documents.';
+      $('noteBas').textContent='Vous pouvez revenir sur cette page à tout moment pour compléter votre envoi.';
     } else {
       var opt=mois.some(function(x){return !estRecu(x)&&etiquetteAuto(x);});
       $('consigne').innerHTML='Pour compléter votre dossier, merci de nous transmettre les documents ci-dessous.<ol>'+
-        '<li>Glissez chaque fichier dans la case du document correspondant (ou cliquez dans la case pour le choisir).</li>'+
-        (recus.length?'<li>Les documents marqués ✔ sont bien arrivés : il n’y a rien à refaire.</li>':'')+
-        (opt?'<li>Les documents avec une étiquette orange ne sont à déposer que s’ils existent ce mois-ci.</li>':'')+
-        '<li>Terminez par le bouton vert «&nbsp;Envoyer mes documents&nbsp;» en bas de page.</li></ol>';
+        '<li>Déposez chaque fichier dans l’emplacement prévu pour le document correspondant.</li>'+
+                (opt?'<li>Les documents signalés en orange ne sont à transmettre que s’ils existent pour ce mois.</li>':'')+
+        '<li>Validez ensuite votre envoi à l’aide du bouton «&nbsp;Envoyer mes documents&nbsp;».</li></ol>';
       if(mois.length){
         var rub=mois[0].rubrique||'Documents du mois';
         h+='<section><h2>'+esc(rub)+'</h2>'+blocBanques(mois)+
-           '<div class="rappel"><b>Ce mois-ci, avez-vous signé un nouveau prêt, un crédit-bail, une location longue durée, ou ouvert un nouveau compte ?</b><br>Si oui, merci de joindre le contrat ou le tableau d’amortissement dans «&nbsp;Autre document&nbsp;» ci-dessous.</div></section>';
+           '<div class="rappel"><b>Un nouveau prêt, un crédit-bail, une location longue durée ou un nouveau compte a-t-il été mis en place ce mois-ci ?</b><br>Dans ce cas, merci de nous transmettre le contrat ou le tableau d’amortissement dans la rubrique «&nbsp;Autre document&nbsp;».</div></section>';
       }
       var complRestants=compl.filter(function(x){return !estRecu(x);});
       if(compl.length){
-        h+='<section><h2>Documents encore attendus</h2><p class="intro">Documents demandés après lecture de vos relevés.</p>'+
+        h+='<section><h2>Documents encore attendus</h2><p class="intro">Documents complémentaires nécessaires à l’examen de vos relevés.</p>'+
            compl.map(function(x){return carteDoc(x,lireCompte(x.compte),true);}).join('')+'</section>';
       }
       if(!liste.some(function(x){return !estRecu(x);})){
         $('consigne').innerHTML='Tous les documents demandés ont bien été reçus. Merci. Vous pouvez encore nous transmettre un autre document ci-dessous.';
       }
-      $('noteBas').textContent='Vous pouvez revenir plus tard : les documents déjà reçus restent indiqués avec ✔.';
+      $('noteBas').textContent='Vous pouvez revenir sur cette page à tout moment pour compléter votre envoi.';
     }
     $('liste').innerHTML=h;
     docs=[].slice.call(document.querySelectorAll('[data-doc="1"]'));
