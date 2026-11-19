@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Dépôt des documents bancaires – Cabinet AURE</title>
+<style>
+  :root{--vert:#2e6b3a;--vert2:#66bb6a;--vert3:#e8f5e9;--txt:#222;--gris:#6b6b6b;--filet:#e3e3e3}
+  *{box-sizing:border-box}
+  body{margin:0;background:#f4f6f4;font-family:Arial,Helvetica,sans-serif;color:var(--txt);font-size:15px;line-height:1.45}
+  .maquette{color:#9a7b20;text-align:center;font-size:12px;padding:12px 10px 0}
+  .wrap{max-width:820px;margin:0 auto;padding:12px 16px 40px}
+  .carte{background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden}
+  header{padding:22px 26px 18px;text-align:center;border-bottom:1px solid #e8e4d8}
+  header .trait{width:120px;height:2px;background:#b8961e;margin:14px auto 0}
+  header img{max-width:300px;width:70%;height:auto}
+  .carte{border-top:6px solid var(--vert2)}
+  .bande{padding:20px 32px 0;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .bande .lib{font-size:13px;color:var(--gris);text-transform:uppercase;letter-spacing:.5px}
+  .bande h1{margin:2px 0;font-size:25px;color:#222}
+  .bande .per{font-size:14px}
+  .limite{border:1px solid #b9dcb9;background:var(--vert3);border-radius:6px;padding:8px 18px;text-align:center}
+  .limite .t{font-size:12px;font-weight:bold;color:var(--vert);letter-spacing:.5px}
+  .limite .d{font-size:16px;font-weight:bold;color:var(--vert);white-space:nowrap}
+  .corps{padding:18px 32px 8px}
+  .intro{margin:0 0 6px}
+  .progres{display:flex;align-items:center;gap:12px;margin:16px 0 6px;font-size:14px;color:var(--gris)}
+  .barre{flex:1;height:8px;background:#e6ece6;border-radius:4px;overflow:hidden}
+  .barre span{display:block;height:100%;width:0;background:var(--vert2);transition:width .3s}
+  h2{font-size:14px;text-transform:uppercase;letter-spacing:.6px;color:var(--vert);margin:26px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--vert2)}
+  .doc{border:1px solid var(--filet);border-radius:8px;margin:0 0 12px;padding:14px 16px;transition:border-color .2s,background .2s}
+  .doc.ok{border-color:var(--vert2);background:#f6fbf6}
+  .doc-tete{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .doc-titre{font-weight:bold}
+  .doc-compte{color:var(--gris);font-size:14px;margin-top:2px}
+  .etat{flex:none;font-size:12px;font-weight:bold;padding:3px 9px;border-radius:12px;background:#fdecea;color:#b3261e;white-space:nowrap}
+  .doc.ok .etat{background:var(--vert3);color:var(--vert)}
+  table.mt{border-collapse:collapse;margin:10px 0 2px;font-size:14px}
+  table.mt th{background:var(--vert3);color:var(--vert);font-size:13px;text-align:left;padding:4px 12px;border-bottom:2px solid var(--vert2)}
+  table.mt td{padding:3px 12px;border-bottom:1px solid #eee}
+  table.mt td.m{text-align:right;white-space:nowrap}
+  .zone{margin-top:10px;border:2px dashed #b9cfb9;border-radius:8px;padding:12px;text-align:center;color:var(--gris);font-size:14px;cursor:pointer;background:#fbfdfb;transition:background .2s,border-color .2s}
+  .zone:hover,.zone.survol{background:var(--vert3);border-color:var(--vert2);color:var(--vert)}
+  .zone b{color:var(--vert)}
+  .zone input{display:none}
+  .fichiers{list-style:none;margin:8px 0 0;padding:0;font-size:13px}
+  .fichiers li{display:flex;justify-content:space-between;align-items:center;padding:4px 8px;background:#fff;border:1px solid #e3eee3;border-radius:6px;margin-top:4px}
+  .fichiers li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fichiers button{border:0;background:none;color:#b3261e;cursor:pointer;font-size:13px}
+  textarea{width:100%;margin-top:10px;border:1px solid #d6d6d6;border-radius:6px;padding:8px;font:inherit;font-size:14px;min-height:60px}
+  .actions{text-align:center;padding:12px 26px 26px}
+  .btn{background:var(--vert);color:#fff;border:0;border-radius:8px;padding:14px 26px;font-size:16px;font-weight:bold;cursor:pointer}
+  .btn:disabled{background:#a9bfa9;cursor:not-allowed}
+  .note{font-size:13px;color:var(--gris);margin-top:10px}
+  footer{text-align:center;font-size:13px;color:var(--gris);padding:18px 10px 0}
+  .depose{color:var(--vert);font-size:14px;margin-top:8px}
+  .msg{padding:30px 26px;text-align:center;color:var(--gris)}
+  .err{color:#b3261e;font-size:13px;margin-top:6px}
+  .merci{display:none;padding:34px 26px;text-align:center}
+  .merci .rond{width:64px;height:64px;border-radius:50%;background:var(--vert3);color:var(--vert);font-size:34px;line-height:64px;margin:0 auto 14px}
+  .merci h2{border:0;text-transform:none;letter-spacing:0;font-size:20px;margin:0 0 8px}
+  .merci ul{text-align:left;display:inline-block;font-size:14px;margin:12px 0 0}
+  @media(max-width:520px){.corps,.actions{padding-left:16px;padding-right:16px}.bande{padding:16px 16px 0}.doc-tete{flex-direction:column}.etat{align-self:flex-start}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="carte">
+  <header><img alt="Cabinet AURE" src="logo.png"><div class="trait"></div></header>
+  <div id="chargement" class="msg">Chargement de vos documents…</div>
+  <div id="contenu" style="display:none">
+   <div class="bande">
+     <div><div class="lib">Documents bancaires</div><h1 id="societe"></h1><div class="per" id="periode"></div></div>
+     <div class="limite" id="limite" style="display:none"><div class="t">DATE LIMITE</div><div class="d" id="dateLimite"></div></div>
+   </div>
+   <div id="formulaire">
+    <div class="corps">
+     <p class="intro" id="intro">Pour chaque document ci-dessous, cliquez sur « <b>Déposer le fichier</b> », puis sur « <b>Envoyer mes documents</b> ».</p>
+     <div class="progres" id="progres"><div class="barre"><span id="barre"></span></div><div id="compteur"></div></div>
+     <div id="liste"></div>
+     <h2>Autre document</h2>
+     <div class="doc" id="autre" data-ref="AUTRE">
+       <div class="doc-tete"><div><div class="doc-titre">Un autre document bancaire à nous transmettre ?</div><div class="doc-compte">Relevé d’un autre compte, relevé de carte, LCR, tableau d’amortissement…</div></div></div>
+       <label class="zone"><input type="file" multiple><b>Déposer le ou les fichiers</b> ou cliquer pour les choisir</label>
+       <ul class="fichiers"></ul>
+       <textarea id="precision" placeholder="Précision éventuelle (facultatif)"></textarea>
+     </div>
+    </div>
+    <div class="actions">
+     <button class="btn" id="envoyer" disabled>✔ Envoyer mes documents</button>
+     <div class="err" id="erreurEnvoi"></div>
+     <div class="note">Vous pouvez revenir sur cette page plus tard pour compléter : les documents déjà reçus n’y figureront plus.</div>
+    </div>
+   </div>
+   <div class="merci" id="merci">
+    <div class="rond">✔</div>
+    <h2>Merci, vos documents ont bien été transmis.</h2>
+    <ul id="recap"></ul>
+   </div>
+  </div>
+ </div>
+ <footer>Pour toute information, veuillez nous contacter au 01&nbsp;30&nbsp;49&nbsp;50&nbsp;05.<br>CABINET AURE – 6 rue des Marais – 78310 Coignières</footer>
+</div>
+<script>
+(function(){
+  var P=new URLSearchParams(location.search), S=P.get('s'), K=P.get('k'), X=P.get('x');
+  var MAX=20*1024*1024, docs=[];
+  function $(i){return document.getElementById(i);}
+  function esc(t){var d=document.createElement('div');d.textContent=t==null?'':t;return d.innerHTML;}
+  function erreur(t){$('chargement').innerHTML=esc(t)+'<br><br>Pour toute information : 01&nbsp;30&nbsp;49&nbsp;50&nbsp;05.';}
+  if(!S||!K||!X){erreur('Ce lien n’est pas valide.');return;}
+
+  fetch(X+'?s='+encodeURIComponent(S)+'&k='+encodeURIComponent(K)).then(function(r){return r.json();}).then(function(d){
+    if(!d.ok){erreur(d.erreur||'Ce lien n’est pas valide.');return;}
+    $('societe').textContent=d.societe;
+    $('periode').textContent=d.periode||'';
+    if(d.dateLimite){$('dateLimite').textContent='► '+d.dateLimite+' ◄';$('limite').style.display='';}
+    afficher(d.documents||[]);
+    $('chargement').style.display='none';$('contenu').style.display='';
+  }).catch(function(){erreur('La page n’a pas pu être chargée. Merci de réessayer dans quelques instants.');});
+
+  function afficher(liste){
+    var h='',rub='';
+    liste.forEach(function(x){
+      if(x.rubrique!==rub){rub=x.rubrique;h+='<h2>'+esc(rub)+'</h2>';}
+      var t='';
+      if(x.montants&&x.montants.length){
+        t='<table class="mt"><tr><th>Date du prélèvement</th><th>Montant en EUR</th></tr>'+
+          x.montants.map(function(m){return '<tr><td>'+esc(m.date)+'</td><td class="m">'+esc(m.montant).replace(/ /g,'&nbsp;')+'</td></tr>';}).join('')+'</table>';
+      }
+      var ok=x.statut==='Déposé';
+      h+='<div class="doc'+(ok?' ok':'')+'" data-ref="'+esc(x.ref)+'" data-doc="'+(ok?'':'1')+'">'+
+         '<div class="doc-tete"><div><div class="doc-titre">'+esc(x.document)+'</div><div class="doc-compte">'+esc(x.compte)+'</div></div>'+
+         '<div class="etat">'+(ok?'Reçu ✓':'À déposer')+'</div></div>'+t+
+         (ok?'<div class="depose">Reçu le '+esc(x.deposeLe)+', en cours de vérification par le cabinet.</div>':
+         '<label class="zone"><input type="file" multiple accept=".pdf,.ofx,.jpg,.jpeg,.png,.heic,.xls,.xlsx,.csv,.qif,.txt"><b>Déposer le fichier</b> ou cliquer pour le choisir</label><ul class="fichiers"></ul>')+
+         '</div>';
+    });
+    $('liste').innerHTML=h;
+    var aDeposer=liste.filter(function(x){return x.statut!=='Déposé';}).length;
+    if(!aDeposer){$('intro').textContent='Tous les documents demandés ont été reçus. Merci. Vous pouvez encore nous transmettre un autre document ci-dessous.';$('progres').style.display='none';}
+    docs=[].slice.call(document.querySelectorAll('[data-doc="1"]'));
+    docs.concat([$('autre')]).forEach(brancher);
+    maj();
+  }
+
+  function brancher(d){
+    d.files=[];
+    var zone=d.querySelector('.zone'),input=zone.querySelector('input'),ul=d.querySelector('.fichiers'),etat=d.querySelector('.etat');
+    function rendre(){
+      ul.innerHTML='';
+      d.files.forEach(function(f,i){
+        var li=document.createElement('li'),s=document.createElement('span'),b=document.createElement('button');
+        s.textContent='📄 '+f.name;b.textContent='Retirer';b.type='button';
+        b.onclick=function(){d.files.splice(i,1);rendre();};
+        li.appendChild(s);li.appendChild(b);ul.appendChild(li);
+      });
+      d.classList.toggle('ok',d.files.length>0);
+      if(etat)etat.textContent=d.files.length?'Prêt à envoyer':'À déposer';
+      maj();
+    }
+    function ajouter(l){for(var i=0;i<l.length;i++){if(l[i].size>MAX){alerte(l[i].name+' : fichier trop volumineux (20 Mo au maximum).');continue;}d.files.push(l[i]);}rendre();}
+    input.addEventListener('change',function(){ajouter(input.files);input.value='';});
+    ['dragenter','dragover'].forEach(function(e){zone.addEventListener(e,function(ev){ev.preventDefault();zone.classList.add('survol');});});
+    ['dragleave','drop'].forEach(function(e){zone.addEventListener(e,function(ev){ev.preventDefault();zone.classList.remove('survol');});});
+    zone.addEventListener('drop',function(ev){ajouter(ev.dataTransfer.files);});
+  }
+  function alerte(t){$('erreurEnvoi').textContent=t;}
+  function maj(){
+    var n=docs.filter(function(d){return d.files.length;}).length;
+    $('barre').style.width=(docs.length?n/docs.length*100:0)+'%';
+    $('compteur').textContent=n+' document'+(n>1?'s':'')+' sur '+docs.length+' prêt'+(n>1?'s':'')+' à envoyer';
+    $('envoyer').disabled=!(n||$('autre').files.length||$('precision').value.trim());
+  }
+  $('precision').addEventListener('input',maj);
+
+  function lire(f){return new Promise(function(ok,ko){var r=new FileReader();r.onload=function(){ok(String(r.result).split(',')[1]||'');};r.onerror=ko;r.readAsDataURL(f);});}
+  function poster(o){return fetch(X,{method:'POST',body:JSON.stringify(o)}).then(function(r){return r.json();}).then(function(d){if(!d.ok)throw new Error(d.erreur||'Erreur');return d;});}
+
+  $('envoyer').onclick=function(){
+    var b=this,taches=[],recap=[];
+    docs.concat([$('autre')]).forEach(function(d){
+      var ref=d.getAttribute('data-ref'),titre=d.querySelector('.doc-titre').textContent;
+      d.files.forEach(function(f){if(!f._ok)taches.push({ref:ref,f:f});});
+      if(d.files.length)recap.push(titre+' ('+d.files.length+' fichier'+(d.files.length>1?'s':'')+')');
+    });
+    var prec=$('precision').value.trim();
+    if(prec&&!$('autre').files.length){taches.push({ref:'AUTRE',f:null});recap.push('Précision transmise');}
+    b.disabled=true;alerte('');
+    var i=0;
+    (function suivant(){
+      if(i>=taches.length){
+        $('recap').innerHTML=recap.map(function(t){return '<li>'+esc(t)+'</li>';}).join('');
+        $('formulaire').style.display='none';$('merci').style.display='block';window.scrollTo(0,0);return;
+      }
+      var t=taches[i];b.textContent='Envoi en cours… '+(i+1)+' / '+taches.length;
+      (t.f?lire(t.f):Promise.resolve('')).then(function(b64){
+        return poster({s:S,k:K,ref:t.ref,nom:t.f?t.f.name:'',type:t.f?t.f.type:'',base64:b64,precision:t.ref==='AUTRE'?prec:''});
+      }).then(function(){if(t.f)t.f._ok=true;i++;suivant();}).catch(function(e){
+        b.disabled=false;b.textContent='✔ Envoyer mes documents';
+        alerte('L’envoi a échoué ('+(e.message||e)+'). Merci de réessayer ; les fichiers déjà envoyés ne seront pas perdus.');
+      });
+    })();
+  };
+})();
+</script>
+</body>
+</html>
