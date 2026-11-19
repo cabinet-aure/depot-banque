@@ -14,7 +14,7 @@
   .bande{height:8px;background:var(--vert2)}
   header{background:#fff;padding:26px 24px 20px;text-align:center;border-bottom:1px solid #e6e1d3}
   header img{max-width:420px;width:85%;height:auto}
-  .filet{width:120px;height:2px;background:var(--dore);margin:12px auto 0}
+  .filet{height:1px;background:var(--dore);margin:16px 0 0;opacity:.8}
   h1{font-size:22px;margin:20px 0 4px;color:var(--vert)}
   .societe{font-size:17px;font-weight:bold}
   .limite{display:inline-block;margin-top:10px;background:#fff;border:1px solid var(--bord);border-left:6px solid var(--vert2);padding:8px 12px;font-size:14px}
@@ -71,8 +71,18 @@
   .merci{display:none;padding:34px 24px;text-align:center;background:#fff}
   .merci .rond{width:64px;height:64px;border-radius:50%;background:var(--vert3);color:var(--vert);font-size:34px;line-height:64px;margin:0 auto 14px}
   .merci h2{border:0;text-transform:none;letter-spacing:0;font-size:20px;margin:0 0 8px;color:var(--txt)}
-  .merci ul{text-align:left;display:inline-block;font-size:14px;margin:12px 0 0}
-  footer{text-align:center;font-size:12px;color:var(--gris);border-top:1px solid #bdbdbd;padding:14px 16px;background:#fff}
+  .recap{max-width:560px;margin:20px auto 0;text-align:left}
+  .rgr{border:1px solid var(--bord);border-radius:8px;padding:10px 14px;margin-bottom:10px;background:#fff}
+  .rbq{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:15px}
+  .rbq .pastille{width:30px;height:30px;font-size:11px !important}
+  .rli{font-size:14px;padding:3px 0 3px 40px}
+  .rli .ok{color:var(--vert2);font-weight:bold}
+  .rli .nf{color:var(--gris);font-size:13px;white-space:nowrap}
+  .suite{font-size:14px;color:var(--gris);margin:18px auto 16px;max-width:520px}
+  .btn.sec{background:#fff;color:var(--vert);border:2px solid var(--vert);font-size:15px;padding:10px 20px}
+  footer{background:#383e42;color:#fff;padding:16px 24px;text-align:center;font-size:13px;line-height:21px}
+  footer b{color:#fff}
+  footer .adr{font-size:11px;color:#fff}
   @media(max-width:640px){.page{margin:12px 8px 24px}.corps{padding:6px 12px 24px}.groupe{margin-left:10px;padding-left:8px}}
 </style>
 </head>
@@ -113,14 +123,16 @@
  <div class="merci" id="merci">
   <div class="rond">✔</div>
   <h2>Nous vous remercions : vos documents ont bien été transmis au cabinet.</h2>
-  <ul id="recap"></ul>
+  <div id="recap" class="recap"></div>
+  <p class="suite">Vos documents vont être examinés par nos services. Nous reviendrons vers vous si un complément s’avère nécessaire.</p>
+  <button class="btn sec" type="button" onclick="location.reload()">Revenir à mes documents</button>
  </div>
- <footer>CABINET AURE · 6 rue des Marais, 78310 Coignières · Tél. : 01&nbsp;30&nbsp;49&nbsp;50&nbsp;05</footer>
+ <footer>Pour toute information, veuillez nous contacter au <b>01&nbsp;30&nbsp;49&nbsp;50&nbsp;05</b>.<br><span class="adr">CABINET AURE · 6 rue des Marais – 78310 Coignières</span></footer>
 </div>
 <script>
 (function(){
   var P=new URLSearchParams(location.search), S=P.get('s'), K=P.get('k'), X=P.get('x');
-  var MAX=20*1024*1024, docs=[];
+  var MAX=20*1024*1024, docs=[], BQ={};
   var ACCEPT='.pdf,.ofx,.jpg,.jpeg,.png,.heic,.xls,.xlsx,.csv,.qif,.txt';
   function $(i){return document.getElementById(i);}
   function esc(t){var d=document.createElement('div');d.textContent=t==null?'':String(t);return d.innerHTML;}
@@ -166,6 +178,7 @@
     r.cle=r.b[2]+'|'+r.fin;
     return r;
   }
+  function nomBanque(b){return b[0]==='Caixa'?'Caixa Geral de Depósitos':b[0];}
   function pastille(b){
     var fs=b[2].length>=5?'9.5px':(b[2].length>=3?'13px':'15px');
     return '<div class="pastille" style="background:'+b[3]+';color:'+b[4]+';'+(b[5]?'border:'+b[5]+';':'')+'font-size:'+fs+'">'+esc(b[2])+'</div>';
@@ -214,7 +227,9 @@
       t='<table class="mt"><tr><th>Date du prélèvement</th><th class="m">Montant en EUR</th></tr>'+
         x.montants.map(function(m){return '<tr><td>'+esc(m.date)+'</td><td class="m">'+nbsp(m.montant)+'</td></tr>';}).join('')+'</table>';
     }
-    return '<div class="doc" data-ref="'+esc(x.ref)+'" data-doc="1">'+
+    var lib=titreDoc(x,{},false).replace(/&amp;/g,'&')+(plusieurs?' – '+r.type+(r.fin?' (se terminant par '+r.fin+')':''):'');
+    BQ[r.b[1]]=r.b;
+    return '<div class="doc" data-ref="'+esc(x.ref)+'" data-doc="1" data-bq="'+esc(r.b[1])+'" data-lib="'+esc(lib)+'">'+
       (avecTag?etiquette(r,x):'')+
       '<div class="doc-titre">'+titreDoc(x,r,!avecTag&&!!plusieurs)+(et?' <span class="annot">'+esc(et)+'</span>':'')+(dd?' <span class="deja">– déjà demandé le '+esc(dd)+'</span>':'')+'</div>'+
       (r.suite?'<div class="doc-compte">'+esc(r.suite.charAt(0).toUpperCase()+r.suite.slice(1))+'</div>':'')+
@@ -335,17 +350,26 @@
   $('envoyer').onclick=function(){
     var b=this,taches=[],recap=[];
     docs.concat([$('autre')]).forEach(function(d){
-      var ref=d.getAttribute('data-ref'),titre=d.querySelector('.doc-titre').textContent;
+      var ref=d.getAttribute('data-ref');
       d.files.forEach(function(f){if(!f._ok)taches.push({ref:ref,f:f});});
-      if(d.files.length)recap.push(titre+' ('+d.files.length+' fichier'+(d.files.length>1?'s':'')+')');
+      if(d.files.length)recap.push({bq:d.getAttribute('data-bq')||'',lib:d.getAttribute('data-lib')||'Autre document',n:d.files.length});
     });
     var prec=$('precision').value.trim();
-    if(prec&&!$('autre').files.length){taches.push({ref:'AUTRE',f:null});recap.push('Précision transmise');}
+    if(prec&&!$('autre').files.length){taches.push({ref:'AUTRE',f:null});recap.push({bq:'',lib:'Commentaire transmis',n:0});}
     b.disabled=true;alerte('');
     var i=0;
     (function suivant(){
       if(i>=taches.length){
-        $('recap').innerHTML=recap.map(function(t){return '<li>'+esc(t)+'</li>';}).join('');
+        var ordre=[],g={};
+        recap.forEach(function(o){var k=o.bq||'~';if(!g[k]){g[k]=[];ordre.push(k);}g[k].push(o);});
+        ordre.sort(function(a,b){return (a==='~')-(b==='~');});
+        $('recap').innerHTML=ordre.map(function(k){
+          var bq=BQ[k], tete=bq?'<div class="rbq">'+pastille(bq)+'<b>'+esc(bq[1])+'</b></div>':'<div class="rbq"><b>Autres documents</b></div>';
+          return '<div class="rgr">'+tete+g[k].map(function(o){
+            return '<div class="rli"><span class="ok">✔</span> '+esc(o.lib)+(o.n?' <span class="nf">· '+o.n+' fichier'+(o.n>1?'s':'')+'</span>':'')+'</div>';
+          }).join('')+'</div>';
+        }).join('');
+        $('limite').style.display='none';
         $('formulaire').style.display='none';$('merci').style.display='block';window.scrollTo(0,0);return;
       }
       var t=taches[i];b.textContent='Envoi en cours… '+(i+1)+' / '+taches.length;
