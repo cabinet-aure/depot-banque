@@ -142,7 +142,8 @@
 </div>
 <script>
 (function(){
-  var P=new URLSearchParams(location.search), S=P.get('s'), K=P.get('k'), X=P.get('x');
+  var APPLI='https://script.google.com/macros/s/AKfycbzvr244hWagP_E1qOxgDi29Fl8IIPMSJmukeA2eHmq7fGx5Mk0a67XbBVq4J3Dkk5Hg/exec';
+  var P=new URLSearchParams(location.search), S=P.get('s'), K=P.get('k'), X=P.get('x')||APPLI;
   var MAX=20*1024*1024, docs=[], BQ={};
   var ACCEPT='.pdf,.ofx,.jpg,.jpeg,.png,.heic,.xls,.xlsx,.csv,.qif,.txt';
   function $(i){return document.getElementById(i);}
