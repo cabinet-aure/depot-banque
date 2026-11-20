@@ -230,11 +230,23 @@
   function dejaDemande(x){
     return x.dejaDemandeLe||'';
   }
+  /* « 20/11/2026 à 09h02 » → clé triable 202611200902 */
+  function cleDate(s){
+    var m=String(s||'').match(/(\d{2})\/(\d{2})\/(\d{4})(?:\D+(\d{1,2})h(\d{2}))?/);
+    return m?Number(m[3]+m[2]+m[1]+('0'+(m[4]||'0')).slice(-2)+(m[5]||'00')):0;
+  }
+  /* Documents de la dernière demande d'abord, puis ceux déjà réclamés (mention rouge) */
+  function nouveauxDabord(l){
+    return l.map(function(x,i){return {x:x,i:i};}).sort(function(a,b){
+      return (dejaDemande(a.x)?1:0)-(dejaDemande(b.x)?1:0)||a.i-b.i;
+    }).map(function(o){return o.x;});
+  }
   function carteDoc(x,r,avecTag,plusieurs){
     if(estRecu(x)){
-      return '<div class="recu"><i>✔</i> '+titreDoc(x,r,!!plusieurs)+' <span>– reçu'+(x.deposeLe?' le '+esc(String(x.deposeLe).split(' ')[0]):'')+'</span></div>';
+      return '<div class="recu"><i>✔</i> '+titreDoc(x,r,!!plusieurs)+' <span>– reçu'+(x.deposeLe?' le '+esc(String(x.deposeLe)):'')+'</span></div>';
     }
-    var et=etiquetteAuto(x), dd=dejaDemande(x), t='';
+    /* Document confirmé par le relevé (dates et montants remplis) : plus d'étiquette orange */
+    var et=(x.montants&&x.montants.length)?'':etiquetteAuto(x), dd=dejaDemande(x), t='';
     if(x.montants&&x.montants.length){
       t='<table class="mt"><tr><th>Date du prélèvement</th><th class="m">Montant en EUR</th></tr>'+
         x.montants.map(function(m){return '<tr><td>'+esc(m.date)+'</td><td class="m">'+nbsp(m.montant)+'</td></tr>';}).join('')+'</table>';
@@ -278,9 +290,10 @@
     var recus=liste.filter(estRecu);
     var h='';
     if(relance){
-      var reste=liste.filter(function(x){return !estRecu(x);});
+      var reste=nouveauxDabord(liste.filter(function(x){return !estRecu(x);}));
       if(recus.length||d.recusNb){
-        var n=d.recusNb||recus.length, le=d.recusLe||(recus[0]&&recus[0].deposeLe?String(recus[0].deposeLe).split(' ')[0]:'');
+        var dern=recus.reduce(function(a,x){return cleDate(x.deposeLe)>cleDate(a)?x.deposeLe:a;},'');
+        var n=d.recusNb||recus.length, le=d.recusLe||dern||'';
         $('recuGlobal').innerHTML='✔ Nous avons bien reçu vos documents'+(le?' du '+esc(le):'')+'. Seuls les documents ci-dessous restent à nous transmettre.';
         $('recuGlobal').style.display='';
       }
@@ -308,7 +321,7 @@
       var complRestants=compl.filter(function(x){return !estRecu(x);});
       if(compl.length){
         h+='<section><h2>Documents encore attendus</h2><p class="intro">Documents complémentaires nécessaires à l’examen de vos relevés.</p>'+
-           compl.map(function(x){return carteDoc(x,lireCompte(x.compte),true);}).join('')+'</section>';
+           nouveauxDabord(compl).map(function(x){return carteDoc(x,lireCompte(x.compte),true);}).join('')+'</section>';
       }
       if(!liste.some(function(x){return !estRecu(x);})){
         $('consigne').innerHTML=TOUT_RECU;
