@@ -87,7 +87,7 @@
   .btn.sec{background:#fff;color:var(--vert);border:2px solid var(--vert);font-size:15px;padding:10px 20px}
   footer{background:#383e42;color:#fff;padding:16px 24px;text-align:center;font-size:13px;line-height:21px}
   footer b{color:#fff}
-  footer .adr{font-size:11px;color:#fff}
+  footer .adr{font-size:11px;color:#d5d9dc;letter-spacing:.3px}
   @media(max-width:640px){.page{margin:12px 8px 24px}.corps{padding:6px 12px 24px}.groupe{margin-left:10px;padding-left:8px}}
 </style>
 </head>
@@ -138,7 +138,7 @@
   <p class="suite">Vos documents vont être examinés par nos services. Nous reviendrons vers vous si un complément s’avère nécessaire.</p>
   <button class="btn sec" type="button" onclick="location.reload()">Revenir à mes documents</button>
  </div>
- <footer>Pour toute information, veuillez nous contacter au <b>01&nbsp;30&nbsp;49&nbsp;50&nbsp;05</b>.<br><span class="adr">CABINET AURE · 6 rue des Marais – 78310 Coignières</span></footer>
+ <footer>Pour toute information, veuillez nous contacter au <b>01&nbsp;30&nbsp;49&nbsp;50&nbsp;05</b><br><span class="adr">6 rue des Marais – 78310 Coignières</span></footer>
 </div>
 <script>
 (function(){
@@ -203,7 +203,7 @@
 
   function etiquette(r,x){return '<div class="tag" style="background:'+couleur(r.b)+';color:'+(r.b[2]==='LBP'?'#fff':r.b[4])+'">'+esc(r.b[1])+(r.fin?' <span>· compte se terminant par '+esc(r.fin)+'</span>':'')+'</div>';}
 
-  function erreur(t){$('chargement').innerHTML=esc(t)+'<br><br>Pour toute information : 01&nbsp;30&nbsp;49&nbsp;50&nbsp;05.';}
+  function erreur(t){$('chargement').innerHTML=esc(t)+'<br><br>Pour toute information : 01&nbsp;30&nbsp;49&nbsp;50&nbsp;05';}
   if(!S||!K||!X){erreur('Ce lien n’est pas valide.');return;}
 
   fetch(X+'?s='+encodeURIComponent(S)+'&k='+encodeURIComponent(K)+(P.get('r')?'&r='+encodeURIComponent(P.get('r')):'')).then(function(r){return r.json();}).then(function(d){
